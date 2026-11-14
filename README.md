@@ -35,7 +35,7 @@ Apple's reference: [Analyzing images with multimodal prompting](https://develope
 ## Manual acceptance check
 
 1. Drag and click on the canvas; verify continuous strokes and dots. Undo removes the latest stroke; Clear removes all.
-2. Hide/reveal the prompt. New prompt changes the target and clears the drawing. Empty canvases cannot be submitted.
+2. The target word stays visible. New prompt changes the target and clears the drawing. Empty canvases cannot be submitted.
 3. Draw the target and press Guess. Check the single guess, match verdict and latency. Edit the drawing and verify the old result disappears.
 4. While guessing, ensure draw/undo/clear/new prompt/Guess are disabled.
 5. With Apple Intelligence unavailable, drawing should still work, a reason should appear, and Retry availability should recheck readiness.
@@ -47,5 +47,5 @@ Automated tests cover matching, undo/clear, bitmap dimensions, background opacit
 - `swift build` and the app packaging/ad-hoc signing script succeeded on the environment above.
 - `swift test`: all 3 Swift Testing tests passed.
 - Launched the packaged app and drew a triangular pizza slice with crust and dots using mouse input. Pressing Guess returned **Pizza slice**, **Match!**, **1.71 s** using the on-device adapter.
-- Verified Undo invalidates the result, Hide changes the prompt to Hidden, and Clear/New prompt leave an empty canvas with Guess disabled and a different visible prompt.
+- Verified Undo invalidates the result, and Clear/New prompt leave an empty canvas with Guess disabled and a different visible prompt.
 - Unavailable-model and thrown-error branches compile but were not forced during this live run; Apple Intelligence was available. No system settings were changed.

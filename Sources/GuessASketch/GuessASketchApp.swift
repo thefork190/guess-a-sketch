@@ -15,7 +15,6 @@ struct GameView: View {
     let guesser: any SketchGuesser
     @State private var drawing = Drawing()
     @State private var prompt = DrawPrompt.all.randomElement()!
-    @State private var promptVisible = true
     @State private var busy = false
     @State private var result: String?
     @State private var matched = false
@@ -39,13 +38,12 @@ struct GameView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 3) {
                     Text("YOUR SECRET PROMPT").font(.caption.bold()).foregroundStyle(.secondary)
-                    Text(promptVisible ? prompt.name.capitalized : "Hidden").font(.title2.bold())
+                    Text(prompt.name.capitalized).font(.title2.bold())
                 }
                 Spacer()
-                Button(promptVisible ? "Hide" : "Reveal") { promptVisible.toggle() }
                 Button("New prompt") {
                     prompt = DrawPrompt.all.filter { $0 != prompt }.randomElement()!
-                    drawing.clear(); resetResult(); promptVisible = true
+                    drawing.clear(); resetResult()
                 }.disabled(busy)
             }
             DrawingCanvas(drawing: $drawing, enabled: !busy, onEdit: resetResult)
