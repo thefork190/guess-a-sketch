@@ -1,8 +1,27 @@
 import CoreGraphics
 import Foundation
 
-public struct Drawing {
-    public var strokes: [[CGPoint]] = []
+public enum Ink: String, CaseIterable, Sendable {
+    case black, red, blue, green, orange
+    public var cgColor: CGColor {
+        switch self {
+        case .black: CGColor(red: 0.08, green: 0.08, blue: 0.08, alpha: 1)
+        case .red: CGColor(red: 0.85, green: 0.12, blue: 0.15, alpha: 1)
+        case .blue: CGColor(red: 0.1, green: 0.35, blue: 0.9, alpha: 1)
+        case .green: CGColor(red: 0.1, green: 0.6, blue: 0.25, alpha: 1)
+        case .orange: CGColor(red: 0.95, green: 0.5, blue: 0.05, alpha: 1)
+        }
+    }
+}
+
+public struct Stroke: Equatable {
+    public var points: [CGPoint]
+    public let ink: Ink
+    public init(_ points: [CGPoint], ink: Ink = .black) { self.points = points; self.ink = ink }
+}
+
+public struct Drawing: Equatable {
+    public var strokes: [Stroke] = []
     public init() {}
     public mutating func undo() { if !strokes.isEmpty { strokes.removeLast() } }
     public mutating func clear() { strokes.removeAll() }
@@ -11,21 +30,21 @@ public struct Drawing {
     public func render(in context: CGContext, size: CGSize) {
         context.setFillColor(CGColor(gray: 1, alpha: 1))
         context.fill(CGRect(origin: .zero, size: size))
-        context.setStrokeColor(CGColor(gray: 0.08, alpha: 1))
-        context.setFillColor(CGColor(gray: 0.08, alpha: 1))
         let width = size.width / 150
         context.setLineWidth(width)
         context.setLineCap(.round)
         context.setLineJoin(.round)
         for stroke in strokes {
-            guard let first = stroke.first else { continue }
+            guard let first = stroke.points.first else { continue }
+            context.setStrokeColor(stroke.ink.cgColor)
+            context.setFillColor(stroke.ink.cgColor)
             let point = CGPoint(x: first.x * size.width, y: first.y * size.height)
-            if stroke.count == 1 {
+            if stroke.points.count == 1 {
                 context.fillEllipse(in: CGRect(x: point.x - width/2, y: point.y - width/2, width: width, height: width))
             } else {
                 context.beginPath()
                 context.move(to: point)
-                for p in stroke.dropFirst() { context.addLine(to: CGPoint(x: p.x * size.width, y: p.y * size.height)) }
+                for p in stroke.points.dropFirst() { context.addLine(to: CGPoint(x: p.x * size.width, y: p.y * size.height)) }
                 context.strokePath()
             }
         }

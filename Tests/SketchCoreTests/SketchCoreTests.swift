@@ -14,7 +14,7 @@ import Testing
 @Test func undoAndClear() {
     var drawing = Drawing()
     drawing.undo()
-    drawing.strokes = [[CGPoint(x: 0.2, y: 0.2)], [CGPoint(x: 0.8, y: 0.8)]]
+    drawing.strokes = [Stroke([CGPoint(x: 0.2, y: 0.2)]), Stroke([CGPoint(x: 0.8, y: 0.8)])]
     drawing.undo()
     #expect(drawing.strokes.count == 1)
     drawing.clear()
@@ -23,7 +23,7 @@ import Testing
 
 @Test func bitmapContainsOnlyDrawingWithCorrectOrientation() throws {
     var drawing = Drawing()
-    drawing.strokes = [[CGPoint(x: 0.25, y: 0.25)]]
+    drawing.strokes = [Stroke([CGPoint(x: 0.25, y: 0.25)])]
     let image = try #require(drawing.bitmap())
     #expect(image.width == 600 && image.height == 600)
     let data = try #require(image.dataProvider?.data)
